@@ -2,8 +2,11 @@ title: "From Testbed to Robot"
 description: "An end-to-end sim-to-real pipeline for robot air hockey"
 author: "Da Liu"
 
-url: "https://danielliu04.github.io"
-baseurl: "/air-hockey-blog"
+# Small uppercase label above the title in the hero. Delete to hide it.
+eyebrow: "Robot Learning · Sim-to-Real"
+
+url: "https://air-hockey-rl.github.io"
+baseurl: ""
 
 markdown: kramdown
 kramdown:

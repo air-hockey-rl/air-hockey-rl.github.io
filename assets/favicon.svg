@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Air hockey">
+  <rect width="32" height="32" rx="7" fill="#16181d"/>
+  <circle cx="16" cy="10.5" r="5.75" fill="none" stroke="#8fb0ff" stroke-width="2.5"/>
+  <ellipse cx="16" cy="22.5" rx="6" ry="3.25" fill="#f2f3f6"/>
+</svg>

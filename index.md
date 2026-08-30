@@ -3,6 +3,7 @@ layout: post
 title: "From Testbed to Robot: An End-to-End Sim-to-Real Pipeline for Air Hockey"
 subtitle: "Rebuilding the Box2D air hockey environment around real arm dynamics, and closing the loop with online RL on hardware"
 date: 2026-08-30
+image: /assets/media/autonomous-operation.jpg
 ---
 
 Air hockey is a good stress test for robot learning. Motions need to be fast, well-timed,
@@ -24,7 +25,7 @@ task family, real-world data collection via teleoperation and human shadowing, a
 baseline results for behavior cloning, offline RL, and RL from scratch.
 
 Continued work focuses on a *pipeline*: a path where a policy trained in Box2D can be
-dropped onto the arm and run/learn unattended.
+dropped onto the arm and run and learn automatically.
 
 ## What we rebuilt
 
@@ -88,8 +89,10 @@ real table from data it collects itself.
          poster="{{ '/assets/media/autonomous-operation.jpg' | relative_url }}"
          controls muted loop playsinline preload="metadata"></video>
   <figcaption>
-    The robot operating unattended: episodes run back to back, and the reset policy
-    recovers the puck between them without a human at the table.
+    The robot running automatically: episodes go back to back, and the reset policy
+    recovers the puck between them without a human at the table. Partway through, the arm
+    trips a safety stop — a human clears it and the run picks up from where it left off
+    rather than starting over.
   </figcaption>
 </figure>
 
@@ -129,5 +132,6 @@ contexts.
 ## Where this leaves us
 
 A researcher with a new RL algorithm can train it against a simulator calibrated to a real
-arm, deploy the result to that arm without writing hardware code, let it run unattended
-through resets and safety stops, and fine-tune it online against whatever gap remains.
+arm, deploy the result to that arm without writing hardware code, let it run automatically
+through resets and recover from safety stops, and fine-tune it online against whatever gap
+remains.

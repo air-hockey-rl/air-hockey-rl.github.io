@@ -3,27 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>{{ page.title }}</title>
 <meta name="description" content="{{ page.subtitle | default: site.description }}">
+
 <meta property="og:title" content="{{ page.title }}">
 <meta property="og:description" content="{{ page.subtitle | default: site.description }}">
 <meta property="og:type" content="article">
+<meta property="og:url" content="{{ page.url | absolute_url }}">
+{% if page.image %}<meta property="og:image" content="{{ page.image | absolute_url }}">{% endif %}
 <meta name="twitter:card" content="summary_large_image">
+
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1014" media="(prefers-color-scheme: dark)">
+
+<link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap">
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
 </head>
 <body>
-<article class="post">
-  <header class="post-header">
+
+<header class="site-hero">
+  <div class="wrap">
+    {% if page.eyebrow or site.eyebrow %}<p class="eyebrow">{{ page.eyebrow | default: site.eyebrow }}</p>{% endif %}
     <h1>{{ page.title }}</h1>
     {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
-    {% if page.date %}<p class="meta"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></p>{% endif %}
-  </header>
-  {{ content }}
+    <p class="meta">
+      {% if site.author %}<span class="author">{{ site.author }}</span>{% endif %}
+      {% if site.author and page.date %}<span class="sep">&middot;</span>{% endif %}
+      {% if page.date %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>{% endif %}
+    </p>
+  </div>
+</header>
+
+<article class="post">
+  <div class="post-body">
+    {{ content }}
+  </div>
+
   {% if site.repo_url %}
   <footer class="post-footer">
-    <p><a href="{{ site.repo_url }}">Code and documentation on GitHub &rarr;</a></p>
+    <p>
+      <a class="repo-link" href="{{ site.repo_url }}">
+        Code and documentation on GitHub <span class="arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    </p>
+    {% if site.author %}<p class="colophon">&copy; {{ site.time | date: "%Y" }} {{ site.author }}</p>{% endif %}
   </footer>
   {% endif %}
 </article>
+
 </body>
 </html>

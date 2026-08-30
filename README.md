@@ -1,6 +1,6 @@
 # From Testbed to Robot — project blog
 
-Source for <https://danielliu04.github.io/air-hockey-blog/>.
+Source for <https://air-hockey-rl.github.io/>.
 
 A single-page Jekyll site. GitHub Pages builds it on push; there is no local build step
 and no theme gem, so nothing needs Ruby or Bundler.
@@ -8,7 +8,8 @@ and no theme gem, so nothing needs Ruby or Bundler.
 ```
 _config.yml          site metadata, baseurl
 _layouts/post.html   page shell
-assets/css/main.css  all styling
+assets/css/main.css  all styling (hand-rolled; no theme gem, no build step)
+assets/favicon.svg   tab icon
 assets/media/        transcoded video (H.264 mp4 + jpg posters)
 index.md             the post
 ```
@@ -16,7 +17,7 @@ index.md             the post
 ## Editing
 
 Edit `index.md` and push to `main`. Reference assets through `relative_url` so they
-resolve under the `/air-hockey-blog/` path:
+resolve correctly if `baseurl` ever changes:
 
 ```liquid
 <video src="{{ '/assets/media/name.mp4' | relative_url }}" autoplay loop muted playsinline></video>
