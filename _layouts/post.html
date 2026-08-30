@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title }}</title>
+<meta name="description" content="{{ page.subtitle | default: site.description }}">
+<meta property="og:title" content="{{ page.title }}">
+<meta property="og:description" content="{{ page.subtitle | default: site.description }}">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+</head>
+<body>
+<article class="post">
+  <header class="post-header">
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+    {% if page.date %}<p class="meta"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></p>{% endif %}
+  </header>
+  {{ content }}
+  {% if site.repo_url %}
+  <footer class="post-footer">
+    <p><a href="{{ site.repo_url }}">Code and documentation on GitHub &rarr;</a></p>
+  </footer>
+  {% endif %}
+</article>
+</body>
+</html>

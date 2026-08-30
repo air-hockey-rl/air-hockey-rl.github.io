@@ -1,0 +1,15 @@
+title: "From Testbed to Robot"
+description: "An end-to-end sim-to-real pipeline for robot air hockey"
+author: "Da Liu"
+
+url: "https://danielliu04.github.io"
+baseurl: "/air-hockey-blog"
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+exclude:
+  - README.md
+
+repo_url: "https://github.com/CalCharles/air-hockey-rl"
