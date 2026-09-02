@@ -1,9 +1,7 @@
-title: "From Testbed to Robot"
-description: "An end-to-end sim-to-real pipeline for robot air hockey"
-author: "Da Liu"
+title: "Robot Air Hockey"
+description: "A manipulation testbed for robot learning, spanning two simulators and a real robot arm"
 
-# Small uppercase label above the title in the hero. Delete to hide it.
-eyebrow: "Robot Learning · Sim-to-Real"
+# No site-level author: attribution is per page, so it lands on posts only.
 
 url: "https://air-hockey-rl.github.io"
 baseurl: ""

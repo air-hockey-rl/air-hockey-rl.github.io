@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>{{ page.title }}</title>
-<meta name="description" content="{{ page.subtitle | default: site.description }}">
+<title>{{ page.title }}{% unless page.home %} &middot; {{ site.title }}{% endunless %}</title>
+<meta name="description" content="{{ page.description | default: site.description }}">
 
 <meta property="og:title" content="{{ page.title }}">
-<meta property="og:description" content="{{ page.subtitle | default: site.description }}">
+<meta property="og:description" content="{{ page.description | default: site.description }}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
 {% if page.image %}<meta property="og:image" content="{{ page.image | absolute_url }}">{% endif %}
@@ -28,14 +28,15 @@
 
 <header class="site-hero">
   <div class="wrap">
+    {% unless page.home %}<p class="backlink"><a href="{{ '/' | relative_url }}"><span aria-hidden="true">&larr;</span> {{ site.title }}</a></p>{% endunless %}
     {% if page.eyebrow or site.eyebrow %}<p class="eyebrow">{{ page.eyebrow | default: site.eyebrow }}</p>{% endif %}
     <h1>{{ page.title }}</h1>
     {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
-    <p class="meta">
-      {% if site.author %}<span class="author">{{ site.author }}</span>{% endif %}
-      {% if site.author and page.date %}<span class="sep">&middot;</span>{% endif %}
+    {% if page.author or page.date %}<p class="meta">
+      {% if page.author %}<span class="author">{{ page.author }}</span>{% endif %}
+      {% if page.author and page.date %}<span class="sep">&middot;</span>{% endif %}
       {% if page.date %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>{% endif %}
-    </p>
+    </p>{% endif %}
   </div>
 </header>
 
@@ -51,7 +52,7 @@
         Code and documentation on GitHub <span class="arrow" aria-hidden="true">&rarr;</span>
       </a>
     </p>
-    {% if site.author %}<p class="colophon">&copy; {{ site.time | date: "%Y" }} {{ site.author }}</p>{% endif %}
+    {% if page.author %}<p class="colophon">&copy; {{ site.time | date: "%Y" }} {{ page.author }}</p>{% endif %}
   </footer>
   {% endif %}
 </article>

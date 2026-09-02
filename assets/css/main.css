@@ -174,6 +174,66 @@ a {
 
 a:hover { text-decoration-color: currentColor; }
 
+/* ---- lists -------------------------------------------------------------- */
+
+/* `.post-body > *` already centres these at --measure; only margin-block is set
+   here so that margin-inline: auto survives. .post-list opts out entirely. */
+.post-body ul:not(.post-list),
+.post-body ol {
+  margin-block: 0 1.35rem;
+  padding-left: 1.6rem;
+}
+
+.post-body li { margin-block: 0.3rem; }
+
+.post-body li::marker { color: var(--muted); }
+
+/* ---- navigation and post index ------------------------------------------ */
+
+/* Sits above the eyebrow on every page but the landing page. */
+.backlink {
+  margin: 0 0 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 550;
+}
+
+.backlink a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.backlink a:hover { color: var(--accent); }
+
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-list li {
+  padding-block: 1.05rem;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.post-list li:first-child { border-top: 1px solid var(--rule-soft); }
+
+.post-list .title {
+  font-weight: 600;
+  text-decoration: none;
+  text-wrap: balance;
+}
+
+.post-list .title:hover { text-decoration: underline; }
+
+.post-list .post-meta {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.post-list .sep { opacity: 0.45; }
+
 /* ---- figures ------------------------------------------------------------ */
 
 /* Specificity note: `.post-body > *` (0,1,0) beats a bare `figure` (0,0,1)
@@ -212,6 +272,13 @@ figure video {
 figure.narrow video,
 figure.narrow img {
   max-width: 270px;
+  margin-inline: auto;
+}
+
+/* A square or portrait still that would look overbearing at full break-out width. */
+figure.medium video,
+figure.medium img {
+  max-width: 520px;
   margin-inline: auto;
 }
 
