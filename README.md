@@ -12,15 +12,20 @@ _layouts/post.html   page shell
 assets/css/main.css  all styling (hand-rolled; no theme gem, no build step)
 assets/favicon.svg   tab icon
 assets/media/        transcoded video (H.264 mp4 + jpg posters) and figures
-index.md             landing page (/)
+index.md             overview page (/)
+blog.md              post index (/blog/)
 _posts/              one file per post, each with its own `permalink:`
 ```
+
+Three routes: `/` is the overview of the system, `/blog/` lists the posts, and each post
+has its own permalink. The nav bar at the top of every page links the first two.
 
 Every page uses the same `post` layout, keyed off front matter:
 
 | key | effect |
 | --- | --- |
-| `home: true` | landing page only. Suppresses the "&larr; Robot Air Hockey" back-link and the `&middot; site.title` suffix in `<title>`. |
+| `home: true` | overview page only. Marks Overview as the current nav item and drops the `&middot; site.title` suffix from `<title>`. |
+| `blog: true` | marks Blog as the current nav item. Set on `blog.md` and on every post. |
 | `author:` | shows the hero byline and the footer copyright line. Set it on posts; omit it on the landing page, which is about the project rather than by anyone. |
 | `date:` | shows in the hero byline and orders the post index. Jekyll takes it from front matter, not the filename — keep the two in step anyway. |
 | `permalink:` | the post's URL. Without it a post lands under `/YYYY/MM/DD/`. |
@@ -28,8 +33,9 @@ Every page uses the same `post` layout, keyed off front matter:
 | `eyebrow:`, `image:` | hero label and Open Graph image. |
 
 There is no site-level `author`, so attribution never leaks onto a page that did not ask
-for it. The landing page's `## Posts` section loops over `site.posts`, so a new file in
-`_posts/` appears there on its own.
+for it. `blog.md` loops over `site.posts`, so a new file in `_posts/` appears there on its
+own — nothing to register by hand. `site.repo_url` drives both the GitHub button in the
+hero and the footer link; unset it and both disappear.
 
 ## Editing
 

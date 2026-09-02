@@ -236,17 +236,3 @@ back in context.
 
 We welcome collaborators interested in any aspect of this, whether that is evaluating a
 new algorithm or working on the system itself. The [code]({{ site.repo_url }}) is public.
-
-## Posts
-
-<ul class="post-list">
-  {% for post in site.posts %}
-  <li>
-    <a class="title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    <span class="post-meta">
-      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>{% if post.author %}
-      <span class="sep">&middot;</span> {{ post.author }}{% endif %}
-    </span>
-  </li>
-  {% endfor %}
-</ul>

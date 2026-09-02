@@ -6,6 +6,7 @@ author: "Da Liu"
 description: "An end-to-end sim-to-real pipeline for robot air hockey"
 date: 2026-09-01
 permalink: /from-testbed-to-robot/
+blog: true
 image: /assets/media/autonomous-operation.jpg
 ---
 

@@ -190,19 +190,71 @@ a:hover { text-decoration-color: currentColor; }
 
 /* ---- navigation and post index ------------------------------------------ */
 
-/* Sits above the eyebrow on every page but the landing page. */
-.backlink {
-  margin: 0 0 1.5rem;
+.site-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
   font-size: 0.9375rem;
-  font-weight: 550;
 }
 
-.backlink a {
-  color: var(--muted);
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: var(--wide);
+  padding-block: 0.8rem;
+}
+
+.site-nav .brand {
+  color: var(--fg);
+  font-weight: 650;
+  letter-spacing: -0.01em;
   text-decoration: none;
 }
 
-.backlink a:hover { color: var(--accent); }
+.site-nav .nav-links {
+  display: flex;
+  gap: 1.4rem;
+  margin-left: auto;
+}
+
+.site-nav .nav-links a {
+  color: var(--muted);
+  font-weight: 550;
+  text-decoration: none;
+}
+
+.site-nav .nav-links a:hover { color: var(--accent); }
+.site-nav .nav-links a[aria-current] { color: var(--fg); }
+
+/* GitHub mark under the title (and byline, on pages that have one). */
+.hero-links { margin: 1.5rem 0 0; }
+
+.gh-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0.9375rem;
+  font-weight: 550;
+  text-decoration: none;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+
+.gh-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.gh-link svg {
+  flex: none;
+  width: 1.05em;
+  height: 1.05em;
+  fill: currentColor;
+}
 
 .post-list {
   list-style: none;
@@ -225,12 +277,15 @@ a:hover { text-decoration-color: currentColor; }
 
 .post-list .title:hover { text-decoration: underline; }
 
-.post-list .post-meta {
+.post-list .post-meta,
+.post-list .summary {
   display: block;
   margin-top: 0.15rem;
   font-size: 0.9375rem;
   color: var(--muted);
 }
+
+.post-list .summary { margin-top: 0.3rem; }
 
 .post-list .sep { opacity: 0.45; }
 
