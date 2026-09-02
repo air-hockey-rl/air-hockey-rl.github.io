@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "From Testbed to Robot: An End-to-End Sim-to-Real Pipeline for Air Hockey"
-subtitle: "Rebuilding the Box2D air hockey environment around real arm dynamics, and closing the loop with online RL on hardware"
 date: 2026-08-30
 image: /assets/media/autonomous-operation.jpg
 ---
@@ -9,20 +8,53 @@ image: /assets/media/autonomous-operation.jpg
 Air hockey is a good stress test for robot learning. Motions need to be fast, well-timed,
 and precise, while still requiring high-level planning for specific tasks.
 
-This post describes the current state of our air hockey stack.
+This post describes the current state of our air hockey stack: a UR5e arm over a real
+table, a Box2D simulator calibrated against it, and the software that connects the two.
+The system supports many forms of operation — human teleoperation and demonstration
+collection, behavior cloning and offline learning from that data, reinforcement learning
+in simulation, and a sim-to-real pipeline that carries a trained policy onto the arm,
+evaluates it there automatically, and keeps improving it against the real table. None of
+it is tied to one learning algorithm, and several projects beyond our own have already
+been built on it.
 
 ## What came before
 
-Our work builds directly on **[Robot Air Hockey: A Manipulation Testbed for Robot
-Learning with Reinforcement Learning](https://arxiv.org/abs/2405.03113)** (Chuck et al.,
-2024). That paper introduced air hockey as an interactive RL testbed spanning a family of
-tasks — from simple reaching, through striking and goal-scoring, up to pushing a block by
-hitting it with a puck and human-interactive play — across two simulators of differing
-fidelity and a physical robot.
+Our work builds directly on **[Robot Air Hockey: A Manipulation Testbed for Robot Learning
+with Reinforcement Learning](https://arxiv.org/abs/2405.03113)** (Chuck et al., 2024),
+which introduced air hockey as an interactive RL testbed and established most of the
+infrastructure this project started from.
 
-It contributed the pieces this project started from: a Box2D air hockey simulator, the
-task family, real-world data collection via teleoperation and human shadowing, and
-baseline results for behavior cloning, offline RL, and RL from scratch.
+**A task family spanning simulation and hardware.** The testbed defines ten tasks over the
+same table, paddle, and puck, graded from ones behavior cloning can solve to ones humans
+struggle with on the real robot: reaching a position, reaching a position at a target
+velocity, touching the puck, striking a stationary puck, striking a puck into a crowd of
+blocks, juggling, hitting the puck to a minimum upward velocity, moving a block by hitting
+it with the puck, and hitting the puck into a goal region — with and without a desired
+arrival velocity. Ten run in Box2D, six in Robosuite, and five on the real robot, with the
+table geometry held consistent across all three so that a policy can in principle move
+between them.
+
+**Two simulators of increasing fidelity, plus the real system.** A 2D Box2D environment
+where the paddle is manipulated directly, fast enough for high-volume interaction and
+exposing physics parameters — masses, damping, friction, gravity, initial puck velocities
+— as knobs. A 3D Robosuite/MuJoCo environment that actually simulates the arm and its
+controller. And the physical setup: a UR5e over a tilted air hockey table, with an
+overhead camera doing puck detection and an RTDE controller turning task-space actions
+into joint commands.
+
+**A teleoperation system, and the data it produced.** Two ways to get human behavior onto
+the table — a virtualized control interface a person drives directly, and human shadowing,
+where a person plays and the arm follows what they do. These produced a dataset of 350
+mouse-teleoperation and 50 shadow-teleoperation trajectories from eight participants of
+varying skill, which is what makes the imitation and offline-RL side of the testbed
+possible at all.
+
+**Baselines across algorithm families.** Behavior cloning, offline RL, and RL from
+scratch, evaluated on the same tasks across all three domains, so a new method has
+something to be measured against. The headline finding was that online interaction matters
+in this domain: RL outperformed imitation in simulation, while on the real robot every
+baseline fell short of human play — and RL from scratch was impractical there, because the
+random exploration it needs wears the arm down.
 
 Continued work focuses on a *pipeline*: a path where a policy trained in Box2D can be
 dropped onto the arm and run and learn automatically.
@@ -101,19 +133,24 @@ including but not limited to: a tightened control and perception loop with predi
 latency, a more reliable camera and puck-detection path, and structured handling of safety
 events.
 
-### 3. Plug and play for other algorithms
+## Applications
 
 None of this is specific to our learning algorithm. The simulator is a standard RL
 environment defined by a single config, so an external training loop can train against
-exactly the physics, observations, and rewards our own trainer uses. The real-robot side
-is separated along the same seam: the deployment and evaluation harness treats the policy
-as an interface, so bringing a new algorithm to the physical table means supplying an
-actor, not writing hardware code. Train in sim, hand over a policy, run it on the arm.
+exactly the physics, observations, and rewards our own trainer uses. The real-robot side is
+separated along the same seam: the deployment and evaluation harness treats the policy as
+an interface, so bringing a new algorithm to the physical table means supplying an actor,
+not writing hardware code. Train in sim, hand over a policy, run it on the arm.
 
-This has already been used outside the project — the sim-to-real path here supported the
-real-robot results in **[Learning Object Manipulation from Scratch via Contrastive
-Interaction](https://arxiv.org/abs/2606.11525)** (Shen et al.), a contrastive RL method
-developed independently of ours.
+Projects have entered the system at several different points.
+
+### Contrastive RL, trained in sim and run on the arm
+
+The sim-to-real path described above supported the real-robot results in **[Learning Object
+Manipulation from Scratch via Contrastive Interaction](https://arxiv.org/abs/2606.11525)**
+(Shen et al.), a contrastive RL method developed independently of ours. It is the clearest
+test of the pipeline as a product: an outside algorithm, trained against our simulator and
+deployed to our arm without touching hardware code.
 
 <figure>
   <video src="{{ '/assets/media/crl-goal-reaching.mp4' | relative_url }}"
@@ -125,9 +162,51 @@ developed independently of ours.
   </figcaption>
 </figure>
 
-We are also extending the transfer: **meta-RL extensions to sim-to-real adaptation** are
-in progress, aimed at policies that identify and adapt to the dynamics over longer
-contexts.
+### Imitation from observation, on the real table
+
+**[A Dual Approach to Imitation Learning from Observations with Offline
+Datasets](https://arxiv.org/abs/2406.08805)** (Sikchi et al., CoRL 2024) used the physical
+setup and its teleoperation system as the hard case for learning from action-free
+demonstrations. Where most of the benchmark suites in that paper are simulated, the air
+hockey table supplied something they could not: a task whose inverse dynamics are genuinely
+difficult, since hitting a moving puck requires a wide range of actions from a state space
+that human demonstrations only sparsely cover.
+
+<figure>
+  <img src="{{ '/assets/media/dilo-puck-hitting.jpg' | relative_url }}"
+       alt="Three overhead views of the air hockey table comparing BCO, SMODICE, and DILO on dynamic puck hitting; the puck's path is traced by a fading red trail.">
+  <figcaption>
+    Dynamic puck hitting on the real table, from Sikchi et al. The red trail traces the
+    puck over time. BCO and SMODICE let it run past the paddle and down the side; DILO
+    intercepts and returns it up the table. Demonstrations for all three came from the
+    teleoperation system.
+  </figcaption>
+</figure>
+
+### Hindsight relabeling in the Box2D environment
+
+**[Null Counterfactual Factor Interactions for Goal-Conditioned Reinforcement
+Learning](https://arxiv.org/abs/2505.03172)** (Chuck et al., ICLR 2025) used the Box2D
+environment as one of its evaluation domains, and for a specific reason: air hockey breaks
+naive hindsight relabeling. Relabeling whatever puck position a trajectory happened to
+reach as the intended goal ends up rewarding the episodes where the puck drifts back to the
+agent's own end — that is, rewarding the policy for missing. Their method filters
+relabeled goals down to those that follow an actual paddle–puck interaction, and reports
+roughly 4× better sample efficiency on the domain as a result.
+
+<figure>
+  <img src="{{ '/assets/media/hint-rollout.png' | relative_url }}"
+       alt="Six frames of a Box2D air hockey rollout: the blue paddle rises to meet the red puck, strikes it, and the puck travels up into the green goal region.">
+  <figcaption>
+    A goal-reaching rollout in the Box2D environment, from Chuck et al. The paddle (blue)
+    intercepts the falling puck (red) and sends it into the goal region (green). The same
+    simulator underlies the sim-to-real work above.
+  </figcaption>
+</figure>
+
+We are also extending the transfer ourselves: **meta-RL extensions to sim-to-real
+adaptation** are in progress, aimed at policies that identify and adapt to the dynamics
+over longer contexts.
 
 ## Where this leaves us
 
